@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LolReset")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ae8f76d56f893f429cfe4440b34c0fd6a32f244d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b74708452d1aa15e2fdda76afe37bb4bda7e9a85")]
 [assembly: System.Reflection.AssemblyProductAttribute("LolReset")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LolReset")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

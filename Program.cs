@@ -31,6 +31,13 @@ namespace LolReset
         private LeagueButton btnResetBoth;
         private RichTextBox outputBox;
         private Panel contentPanel;
+        private Panel buttonPanel;
+        
+        // Constantes pour le positionnement des boutons
+        private const int BUTTON_WIDTH = 230;
+        private const int BUTTON_HEIGHT = 50;
+        private const int BUTTON_SPACING = 20;
+        private const int BUTTON_TOP_MARGIN = 15;
         
         // Operation state
         private bool isRunning = false;
@@ -64,6 +71,7 @@ namespace LolReset
             // Setup form with standard Windows style
             this.Text = "League of Legends Reset Tool";
             this.Size = new Size(800, 600);
+            this.MinimumSize = new Size(750, 500); // Définir une taille minimale pour éviter la troncature
             this.FormBorderStyle = FormBorderStyle.Sizable; // Standard Windows border
             this.MinimizeBox = true;
             this.MaximizeBox = false; // Disable maximize button
@@ -102,25 +110,20 @@ namespace LolReset
                 Padding = new Padding(20)
             };
             
-            // Create button panel with fixed height - no title label, just buttons centered
-            Panel buttonPanel = new Panel
+            // Create button panel with fixed height
+            buttonPanel = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 80,
+                Height = BUTTON_HEIGHT + BUTTON_TOP_MARGIN * 2,
                 BackColor = leagueMediumBlue,
                 Padding = new Padding(15)
             };
             
-            // Calculate button positions to center them
-            int totalButtonWidth = 230 * 3 + 20 * 2; // 3 buttons with 20px spacing between
-            int startX = (this.ClientSize.Width - totalButtonWidth) / 2;
-            
-            // Create buttons
+            // Create buttons avec une taille fixe
             btnResetLeague = new LeagueButton
             {
                 Text = "RESET LEAGUE",
-                Size = new Size(230, 50),
-                Location = new Point(startX, 15),
+                Size = new Size(BUTTON_WIDTH, BUTTON_HEIGHT),
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
                 ForeColor = leagueGold,
@@ -134,8 +137,7 @@ namespace LolReset
             btnResetVanguard = new LeagueButton
             {
                 Text = "RESET VANGUARD",
-                Size = new Size(230, 50),
-                Location = new Point(startX + 230 + 20, 15), // First button width + spacing
+                Size = new Size(BUTTON_WIDTH, BUTTON_HEIGHT),
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
                 ForeColor = leagueGold,
@@ -149,8 +151,7 @@ namespace LolReset
             btnResetBoth = new LeagueButton
             {
                 Text = "RESET BOTH",
-                Size = new Size(230, 50),
-                Location = new Point(startX + 230 * 2 + 20 * 2, 15), // Two button widths + spacing
+                Size = new Size(BUTTON_WIDTH, BUTTON_HEIGHT),
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
                 ForeColor = leagueGold,
@@ -221,6 +222,52 @@ namespace LolReset
             AppendColoredText("RESET VANGUARD - Restarts Riot Vanguard service", leagueBlue);
             AppendColoredText("RESET BOTH - Restarts both League and Vanguard", leagueBlue);
             AppendColoredText("\nStatus: Ready", Color.Green);
+            
+            // Positionner les boutons après la création de tous les contrôles
+            this.Load += (sender, e) => RepositionButtons();
+        }
+
+        // Méthode centralisée pour calculer et positionner les boutons
+        private void RepositionButtons()
+        {
+            if (btnResetLeague == null || btnResetVanguard == null || btnResetBoth == null || buttonPanel == null)
+                return;
+                
+            // Largeur totale nécessaire pour tous les boutons avec espacement
+            int totalButtonWidth = (BUTTON_WIDTH * 3) + (BUTTON_SPACING * 2);
+            
+            // Calculer le point de départ pour centrer les boutons dans le panel
+            int availableWidth = buttonPanel.ClientSize.Width;
+            int startX = (availableWidth - totalButtonWidth) / 2;
+            
+            // S'assurer que startX n'est pas négatif
+            startX = Math.Max(startX, BUTTON_SPACING);
+            
+            // Positionner chaque bouton
+            btnResetLeague.Location = new Point(startX, BUTTON_TOP_MARGIN);
+            btnResetVanguard.Location = new Point(startX + BUTTON_WIDTH + BUTTON_SPACING, BUTTON_TOP_MARGIN);
+            btnResetBoth.Location = new Point(startX + (BUTTON_WIDTH * 2) + (BUTTON_SPACING * 2), BUTTON_TOP_MARGIN);
+            
+            // Vérifier si les boutons sont partiellement hors écran et ajuster si nécessaire
+            if (startX + totalButtonWidth > availableWidth)
+            {
+                // Si l'espace est insuffisant, réduire la taille des boutons ou les réorganiser
+                int adjustedWidth = (availableWidth - (BUTTON_SPACING * 4)) / 3;
+                adjustedWidth = Math.Max(adjustedWidth, 150); // Taille minimale pour les boutons
+                
+                btnResetLeague.Size = new Size(adjustedWidth, BUTTON_HEIGHT);
+                btnResetVanguard.Size = new Size(adjustedWidth, BUTTON_HEIGHT);
+                btnResetBoth.Size = new Size(adjustedWidth, BUTTON_HEIGHT);
+                
+                // Recalculer les positions avec la nouvelle taille
+                int newTotalWidth = (adjustedWidth * 3) + (BUTTON_SPACING * 2);
+                int newStartX = (availableWidth - newTotalWidth) / 2;
+                newStartX = Math.Max(newStartX, BUTTON_SPACING);
+                
+                btnResetLeague.Location = new Point(newStartX, BUTTON_TOP_MARGIN);
+                btnResetVanguard.Location = new Point(newStartX + adjustedWidth + BUTTON_SPACING, BUTTON_TOP_MARGIN);
+                btnResetBoth.Location = new Point(newStartX + (adjustedWidth * 2) + (BUTTON_SPACING * 2), BUTTON_TOP_MARGIN);
+            }
         }
 
         // Load custom fonts from resources
@@ -262,16 +309,8 @@ namespace LolReset
         {
             base.OnResize(e);
             
-            // Recalculate button positions on resize to keep them centered
-            if (btnResetLeague != null && btnResetVanguard != null && btnResetBoth != null)
-            {
-                int totalButtonWidth = 230 * 3 + 20 * 2; // 3 buttons with 20px spacing between
-                int startX = (this.ClientSize.Width - totalButtonWidth) / 2;
-                
-                btnResetLeague.Location = new Point(startX, btnResetLeague.Location.Y);
-                btnResetVanguard.Location = new Point(startX + 230 + 20, btnResetVanguard.Location.Y);
-                btnResetBoth.Location = new Point(startX + 230 * 2 + 20 * 2, btnResetBoth.Location.Y);
-            }
+            // Recalculer le positionnement des boutons à chaque redimensionnement
+            RepositionButtons();
         }
 
         // Fade-in animation
@@ -293,7 +332,6 @@ namespace LolReset
             Both
         }
         
-        // Méthode corrective : ajout de l'en-tête de méthode complet
         private async Task RunScript(ScriptType scriptType)
         {
             if (isRunning)
