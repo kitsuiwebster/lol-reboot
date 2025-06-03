@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "x23N2zqnWAM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\raphm\\Desktop\\lol-reset\\LolReset.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\raphm\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.3\\microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "C:\\Users\\raphm\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net472\\1.0.3\\microsoft.netframework.referenceassemblies.net472.1.0.3.nupkg.sha512",
+    "C:\\Users\\raphm\\.nuget\\packages\\microsoft.powershell.5.referenceassemblies\\1.1.0\\microsoft.powershell.5.referenceassemblies.1.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}

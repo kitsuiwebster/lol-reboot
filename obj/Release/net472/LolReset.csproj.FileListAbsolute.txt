@@ -1,0 +1,13 @@
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.csproj.AssemblyReference.cache
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.AssemblyInfoInputs.cache
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.AssemblyInfo.cs
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.csproj.CoreCompileInputs.cache
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.sourcelink.json
+C:\Users\raphm\Desktop\lol-reset\bin\Release\net472\LolReset.exe.config
+C:\Users\raphm\Desktop\lol-reset\bin\Release\net472\LolReset.exe
+C:\Users\raphm\Desktop\lol-reset\bin\Release\net472\LolReset.pdb
+C:\Users\raphm\Desktop\lol-reset\bin\Release\net472\System.Management.Automation.dll
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.csproj.Up2Date
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.exe
+C:\Users\raphm\Desktop\lol-reset\obj\Release\net472\LolReset.pdb
