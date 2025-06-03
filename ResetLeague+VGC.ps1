@@ -5,7 +5,26 @@ $Yellow = [char]27 + "[33m"
 
 Add-Type -AssemblyName System.Windows.Forms
 
-Write-Host "$Green=>$Reset League reset script has started."
+Write-Host "$Green=>$Reset Script has started."
+
+# Reset Vanguard (vgc) Service
+Try {
+    Write-Host "$Yellow=>$Reset Attempting to stop Vanguard service (vgc)..."
+    Stop-Service -Name "vgc" -Force -ErrorAction Stop
+    Write-Host "$Green=>$Reset Vanguard service stopped successfully."
+
+    Write-Host "$Yellow=>$Reset Waiting 5 seconds before restarting vgc..."
+    Start-Sleep -Seconds 5
+
+    Write-Host "$Yellow=>$Reset Attempting to start Vanguard service (vgc)..."
+    Start-Service -Name "vgc" -ErrorAction Stop
+    Write-Host "$Green=>$Reset Vanguard service started successfully."
+}
+Catch {
+    Write-Host "$Red=>$Reset Failed to reset Vanguard (vgc). Error: $_"
+}
+
+# Stop League-related processes
 $stopTasks = "LeagueClientUx", "RiotClientServices", "LeagueClient"
 
 foreach ($stopTask in $stopTasks) {
@@ -17,16 +36,7 @@ foreach ($stopTask in $stopTasks) {
                 Write-Host "$Yellow=>$Reset Found running instance of $stopTask with PID $($process.Id)"
                 $process.CloseMainWindow() | Out-Null
                 Write-Host "$Yellow=>$Reset Sent close request to $stopTask with PID $($process.Id)"
-                Write-Host "$Yellow=>$Reset ."
-                Start-Sleep -Seconds 1
-                Write-Host "$Yellow=>$Reset .."
-                Start-Sleep -Seconds 1
-                Write-Host "$Yellow=>$Reset ..."
-                Start-Sleep -Seconds 1
-                Write-Host "$Yellow=>$Reset ...."
-                Start-Sleep -Seconds 1
-                Write-Host "$Yellow=>$Reset ....."
-                Start-Sleep -Seconds 1
+                Start-Sleep -Seconds 5
                 if (!$process.HasExited) {
                     Write-Host "$Red=>$Reset Process $stopTask with PID $($process.Id) did not close gracefully, forcing termination..."
                     $process | Stop-Process -Force
@@ -44,7 +54,7 @@ foreach ($stopTask in $stopTasks) {
     }
 }
 
-Write-Host "$Yellow=>$Reset Be patient... restarting League of legends (don't forget to report your jungler)"
+Write-Host "$Yellow=>$Reset Be patient... restarting League of Legends (don't forget to report your jungler)"
 Start-Sleep -Seconds 15
 
 $startTasks = @{
@@ -63,4 +73,4 @@ foreach ($startTask in $startTasks.Keys) {
     }
 }
 
-Write-Host "$Green=>$Reset League reset script ended"
+Write-Host "$Green=>$Reset Script ended"
