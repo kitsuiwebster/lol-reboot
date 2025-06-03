@@ -30,9 +30,7 @@ namespace LolReset
         private LeagueButton btnResetVanguard;
         private LeagueButton btnResetBoth;
         private RichTextBox outputBox;
-        private Panel headerPanel;
         private Panel contentPanel;
-        private Label titleLabel;
         
         // Operation state
         private bool isRunning = false;
@@ -48,7 +46,7 @@ namespace LolReset
         // Custom fonts
         private Font titleFont;
         private Font buttonFont;
-        
+
         // Animation state
         private Timer fadeTimer;
         private float opacity = 0.0f;
@@ -63,71 +61,38 @@ namespace LolReset
             // Load custom fonts
             LoadCustomFonts();
             
-            // Setup form
+            // Setup form with standard Windows style
             this.Text = "League of Legends Reset Tool";
             this.Size = new Size(800, 600);
-            this.FormBorderStyle = FormBorderStyle.None; // Remove borders for custom styling
+            this.FormBorderStyle = FormBorderStyle.Sizable; // Standard Windows border
+            this.MinimizeBox = true;
+            this.MaximizeBox = false; // Disable maximize button
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = leagueDarkBlue;
+            this.BackColor = SystemColors.Control; // Standard Windows background
             this.Opacity = 0;
+            this.ShowInTaskbar = true;
             
-            // Make form draggable
-            this.MouseDown += MainForm_MouseDown;
-            this.MouseMove += MainForm_MouseMove;
-            
-            // Create header
-            headerPanel = new Panel
+            // Fix for app.ico loading - Use assembly path to ensure correct loading
+            try
             {
-                Dock = DockStyle.Top,
-                Height = 60,
-                BackColor = leagueMediumBlue
-            };
-            
-            // Create title
-            titleLabel = new Label
+                // First try to use the icon from the application's executable
+                this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
+                
+                // If that fails, look for app.ico in the directory
+                if (this.Icon == null)
+                {
+                    string iconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
+                    if (File.Exists(iconPath))
+                    {
+                        this.Icon = new Icon(iconPath);
+                    }
+                }
+            }
+            catch
             {
-                Text = "LEAGUE OF LEGENDS RESET TOOL",
-                Font = titleFont,
-                ForeColor = leagueGold,
-                AutoSize = true,
-                Location = new Point(20, 15),
-                BackColor = Color.Transparent
-            };
-            
-            // Create close button
-            Button closeButton = new Button
-            {
-                Text = "✕",
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(40, 40),
-                Location = new Point(this.Width - 50, 10),
-                ForeColor = Color.White,
-                BackColor = Color.Transparent,
-                FlatAppearance = { BorderSize = 0 }
-            };
-            closeButton.Click += (s, e) => Application.Exit();
-            closeButton.MouseEnter += (s, e) => closeButton.ForeColor = Color.Red;
-            closeButton.MouseLeave += (s, e) => closeButton.ForeColor = Color.White;
-            
-            // Create minimize button
-            Button minimizeButton = new Button
-            {
-                Text = "—",
-                FlatStyle = FlatStyle.Flat,
-                Size = new Size(40, 40),
-                Location = new Point(this.Width - 100, 10),
-                ForeColor = Color.White,
-                BackColor = Color.Transparent,
-                FlatAppearance = { BorderSize = 0 }
-            };
-            minimizeButton.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
-            minimizeButton.MouseEnter += (s, e) => minimizeButton.ForeColor = leagueGold;
-            minimizeButton.MouseLeave += (s, e) => minimizeButton.ForeColor = Color.White;
-            
-            // Add controls to header
-            headerPanel.Controls.Add(titleLabel);
-            headerPanel.Controls.Add(closeButton);
-            headerPanel.Controls.Add(minimizeButton);
+                // Fallback to system icon if we can't load the icon
+                this.Icon = SystemIcons.Application;
+            }
             
             // Create content panel
             contentPanel = new Panel
@@ -137,26 +102,32 @@ namespace LolReset
                 Padding = new Padding(20)
             };
             
-            // Create button panel
+            // Create button panel with fixed height - no title label, just buttons centered
             Panel buttonPanel = new Panel
             {
                 Dock = DockStyle.Top,
                 Height = 80,
-                BackColor = Color.Transparent
+                BackColor = leagueMediumBlue,
+                Padding = new Padding(15)
             };
+            
+            // Calculate button positions to center them
+            int totalButtonWidth = 230 * 3 + 20 * 2; // 3 buttons with 20px spacing between
+            int startX = (this.ClientSize.Width - totalButtonWidth) / 2;
             
             // Create buttons
             btnResetLeague = new LeagueButton
             {
                 Text = "RESET LEAGUE",
                 Size = new Size(230, 50),
-                Location = new Point(20, 15),
+                Location = new Point(startX, 15),
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
                 ForeColor = leagueGold,
                 FlatStyle = FlatStyle.Flat,
                 ImageAlign = ContentAlignment.MiddleLeft,
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                Cursor = Cursors.Hand
             };
             btnResetLeague.Click += async (sender, e) => await RunScript(ScriptType.LeagueOnly);
             
@@ -164,13 +135,14 @@ namespace LolReset
             {
                 Text = "RESET VANGUARD",
                 Size = new Size(230, 50),
-                Location = new Point(275, 15),
+                Location = new Point(startX + 230 + 20, 15), // First button width + spacing
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
                 ForeColor = leagueGold,
                 FlatStyle = FlatStyle.Flat,
                 ImageAlign = ContentAlignment.MiddleLeft,
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                Cursor = Cursors.Hand
             };
             btnResetVanguard.Click += async (sender, e) => await RunScript(ScriptType.VanguardOnly);
             
@@ -178,17 +150,18 @@ namespace LolReset
             {
                 Text = "RESET BOTH",
                 Size = new Size(230, 50),
-                Location = new Point(530, 15),
+                Location = new Point(startX + 230 * 2 + 20 * 2, 15), // Two button widths + spacing
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
                 ForeColor = leagueGold,
                 FlatStyle = FlatStyle.Flat,
                 ImageAlign = ContentAlignment.MiddleLeft,
-                TextAlign = ContentAlignment.MiddleCenter
+                TextAlign = ContentAlignment.MiddleCenter,
+                Cursor = Cursors.Hand
             };
             btnResetBoth.Click += async (sender, e) => await RunScript(ScriptType.Both);
             
-            // Add buttons to panel
+            // Add buttons directly to button panel
             buttonPanel.Controls.Add(btnResetLeague);
             buttonPanel.Controls.Add(btnResetVanguard);
             buttonPanel.Controls.Add(btnResetBoth);
@@ -221,9 +194,8 @@ namespace LolReset
             contentPanel.Controls.Add(outputPanel);
             contentPanel.Controls.Add(buttonPanel);
             
-            // Add panels to form
+            // Add content panel to form
             this.Controls.Add(contentPanel);
-            this.Controls.Add(headerPanel);
             
             // Create scripts folder and save scripts
             CreateScripts();
@@ -286,6 +258,22 @@ namespace LolReset
             }
         }
 
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            
+            // Recalculate button positions on resize to keep them centered
+            if (btnResetLeague != null && btnResetVanguard != null && btnResetBoth != null)
+            {
+                int totalButtonWidth = 230 * 3 + 20 * 2; // 3 buttons with 20px spacing between
+                int startX = (this.ClientSize.Width - totalButtonWidth) / 2;
+                
+                btnResetLeague.Location = new Point(startX, btnResetLeague.Location.Y);
+                btnResetVanguard.Location = new Point(startX + 230 + 20, btnResetVanguard.Location.Y);
+                btnResetBoth.Location = new Point(startX + 230 * 2 + 20 * 2, btnResetBoth.Location.Y);
+            }
+        }
+
         // Fade-in animation
         private void FadeIn(object sender, EventArgs e)
         {
@@ -298,29 +286,14 @@ namespace LolReset
             this.Opacity = opacity;
         }
 
-        // Make form draggable
-        private Point lastPoint = new Point(0, 0);
-        private void MainForm_MouseDown(object sender, MouseEventArgs e)
-        {
-            lastPoint = new Point(e.X, e.Y);
-        }
-
-        private void MainForm_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                this.Left += e.X - lastPoint.X;
-                this.Top += e.Y - lastPoint.Y;
-            }
-        }
-
         private enum ScriptType
         {
             LeagueOnly,
             VanguardOnly,
             Both
         }
-
+        
+        // Méthode corrective : ajout de l'en-tête de méthode complet
         private async Task RunScript(ScriptType scriptType)
         {
             if (isRunning)
@@ -712,6 +685,7 @@ Write-Host ""$Green=>$Reset Script ended""");
             this.ForeColor = Color.FromArgb(200, 170, 60);
             this.Font = new Font("Arial", 10f, FontStyle.Bold);
             this.TextAlign = ContentAlignment.MiddleCenter;
+            this.Cursor = Cursors.Hand;
             
             this.MouseEnter += (s, e) => { isHovered = true; this.Invalidate(); };
             this.MouseLeave += (s, e) => { isHovered = false; isPressed = false; this.Invalidate(); };
