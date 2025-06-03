@@ -6,6 +6,9 @@ using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
+using System.Runtime.InteropServices;
 
 namespace LolReset
 {
@@ -22,67 +25,293 @@ namespace LolReset
 
     public class MainForm : Form
     {
-        private Button btnResetLeague;
-        private Button btnResetVanguard;
-        private Button btnResetBoth;
+        // UI Elements
+        private LeagueButton btnResetLeague;
+        private LeagueButton btnResetVanguard;
+        private LeagueButton btnResetBoth;
         private RichTextBox outputBox;
+        private Panel headerPanel;
+        private Panel contentPanel;
+        private Label titleLabel;
+        
+        // Operation state
         private bool isRunning = false;
+        
+        // Custom colors
+        private readonly Color leagueGold = Color.FromArgb(200, 170, 60);
+        private readonly Color leagueBlue = Color.FromArgb(0, 136, 169);
+        private readonly Color leagueDarkBlue = Color.FromArgb(1, 10, 19);
+        private readonly Color leagueMediumBlue = Color.FromArgb(4, 30, 47);
+        private readonly Color leagueAccentBlue = Color.FromArgb(7, 48, 73);
+        private readonly Color commandBlack = Color.FromArgb(10, 15, 20);
+
+        // Custom fonts
+        private Font titleFont;
+        private Font buttonFont;
+        
+        // Animation state
+        private Timer fadeTimer;
+        private float opacity = 0.0f;
+
+        [DllImport("gdi32.dll")]
+        private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
+
+        private PrivateFontCollection fonts = new PrivateFontCollection();
 
         public MainForm()
         {
-            this.Text = "Game Reset Tool";
-            this.Size = new Size(600, 500);
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            // Load custom fonts
+            LoadCustomFonts();
+            
+            // Setup form
+            this.Text = "League of Legends Reset Tool";
+            this.Size = new Size(800, 600);
+            this.FormBorderStyle = FormBorderStyle.None; // Remove borders for custom styling
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.Icon = SystemIcons.Application;
-
-            // Create buttons
-            btnResetLeague = new Button
+            this.BackColor = leagueDarkBlue;
+            this.Opacity = 0;
+            
+            // Make form draggable
+            this.MouseDown += MainForm_MouseDown;
+            this.MouseMove += MainForm_MouseMove;
+            
+            // Create header
+            headerPanel = new Panel
             {
-                Text = "Reset League of Legends",
-                Location = new Point(50, 20),
-                Size = new Size(150, 40)
+                Dock = DockStyle.Top,
+                Height = 60,
+                BackColor = leagueMediumBlue
+            };
+            
+            // Create title
+            titleLabel = new Label
+            {
+                Text = "LEAGUE OF LEGENDS RESET TOOL",
+                Font = titleFont,
+                ForeColor = leagueGold,
+                AutoSize = true,
+                Location = new Point(20, 15),
+                BackColor = Color.Transparent
+            };
+            
+            // Create close button
+            Button closeButton = new Button
+            {
+                Text = "✕",
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(40, 40),
+                Location = new Point(this.Width - 50, 10),
+                ForeColor = Color.White,
+                BackColor = Color.Transparent,
+                FlatAppearance = { BorderSize = 0 }
+            };
+            closeButton.Click += (s, e) => Application.Exit();
+            closeButton.MouseEnter += (s, e) => closeButton.ForeColor = Color.Red;
+            closeButton.MouseLeave += (s, e) => closeButton.ForeColor = Color.White;
+            
+            // Create minimize button
+            Button minimizeButton = new Button
+            {
+                Text = "—",
+                FlatStyle = FlatStyle.Flat,
+                Size = new Size(40, 40),
+                Location = new Point(this.Width - 100, 10),
+                ForeColor = Color.White,
+                BackColor = Color.Transparent,
+                FlatAppearance = { BorderSize = 0 }
+            };
+            minimizeButton.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
+            minimizeButton.MouseEnter += (s, e) => minimizeButton.ForeColor = leagueGold;
+            minimizeButton.MouseLeave += (s, e) => minimizeButton.ForeColor = Color.White;
+            
+            // Add controls to header
+            headerPanel.Controls.Add(titleLabel);
+            headerPanel.Controls.Add(closeButton);
+            headerPanel.Controls.Add(minimizeButton);
+            
+            // Create content panel
+            contentPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BackColor = leagueDarkBlue,
+                Padding = new Padding(20)
+            };
+            
+            // Create button panel
+            Panel buttonPanel = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 80,
+                BackColor = Color.Transparent
+            };
+            
+            // Create buttons
+            btnResetLeague = new LeagueButton
+            {
+                Text = "RESET LEAGUE",
+                Size = new Size(230, 50),
+                Location = new Point(20, 15),
+                Font = buttonFont,
+                BackColor = leagueAccentBlue,
+                ForeColor = leagueGold,
+                FlatStyle = FlatStyle.Flat,
+                ImageAlign = ContentAlignment.MiddleLeft,
+                TextAlign = ContentAlignment.MiddleCenter
             };
             btnResetLeague.Click += async (sender, e) => await RunScript(ScriptType.LeagueOnly);
-
-            btnResetVanguard = new Button
+            
+            btnResetVanguard = new LeagueButton
             {
-                Text = "Reset Vanguard",
-                Location = new Point(220, 20),
-                Size = new Size(150, 40)
+                Text = "RESET VANGUARD",
+                Size = new Size(230, 50),
+                Location = new Point(275, 15),
+                Font = buttonFont,
+                BackColor = leagueAccentBlue,
+                ForeColor = leagueGold,
+                FlatStyle = FlatStyle.Flat,
+                ImageAlign = ContentAlignment.MiddleLeft,
+                TextAlign = ContentAlignment.MiddleCenter
             };
             btnResetVanguard.Click += async (sender, e) => await RunScript(ScriptType.VanguardOnly);
-
-            btnResetBoth = new Button
+            
+            btnResetBoth = new LeagueButton
             {
-                Text = "Reset Both",
-                Location = new Point(390, 20),
-                Size = new Size(150, 40)
+                Text = "RESET BOTH",
+                Size = new Size(230, 50),
+                Location = new Point(530, 15),
+                Font = buttonFont,
+                BackColor = leagueAccentBlue,
+                ForeColor = leagueGold,
+                FlatStyle = FlatStyle.Flat,
+                ImageAlign = ContentAlignment.MiddleLeft,
+                TextAlign = ContentAlignment.MiddleCenter
             };
             btnResetBoth.Click += async (sender, e) => await RunScript(ScriptType.Both);
-
-            // Create output box
+            
+            // Add buttons to panel
+            buttonPanel.Controls.Add(btnResetLeague);
+            buttonPanel.Controls.Add(btnResetVanguard);
+            buttonPanel.Controls.Add(btnResetBoth);
+            
+            // Create output box (terminal style)
             outputBox = new RichTextBox
             {
-                Location = new Point(50, 80),
-                Size = new Size(490, 350),
+                Dock = DockStyle.Fill,
                 ReadOnly = true,
-                BackColor = Color.Black,
-                ForeColor = Color.White,
+                BackColor = commandBlack,
+                ForeColor = Color.LightGray,
                 Font = new Font("Consolas", 10F),
+                BorderStyle = BorderStyle.None,
                 Multiline = true,
-                ScrollBars = RichTextBoxScrollBars.Vertical
+                ScrollBars = RichTextBoxScrollBars.Vertical,
+                Margin = new Padding(0, 10, 0, 0)
             };
-
-            // Add controls to form
-            this.Controls.Add(btnResetLeague);
-            this.Controls.Add(btnResetVanguard);
-            this.Controls.Add(btnResetBoth);
-            this.Controls.Add(outputBox);
-
-            // Create the scripts folder and save scripts when the application starts
+            
+            // Create panel for output box with border effect
+            Panel outputPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(2),
+                BackColor = leagueBlue,
+                Margin = new Padding(0, 10, 0, 0)
+            };
+            outputPanel.Controls.Add(outputBox);
+            
+            // Add controls to content panel
+            contentPanel.Controls.Add(outputPanel);
+            contentPanel.Controls.Add(buttonPanel);
+            
+            // Add panels to form
+            this.Controls.Add(contentPanel);
+            this.Controls.Add(headerPanel);
+            
+            // Create scripts folder and save scripts
             CreateScripts();
+            
+            // Setup fade-in animation
+            fadeTimer = new Timer();
+            fadeTimer.Interval = 20;
+            fadeTimer.Tick += FadeIn;
+            fadeTimer.Start();
+            
+            // Display welcome message
+            AppendColoredText("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+            AppendColoredText("  _      ____  _        ____  _____ ____  _____ _____", leagueGold);
+            AppendColoredText(" | |    / __ \\| |      |  _ \\|  __ \\___ \\|  __ \\_   _|", leagueGold);
+            AppendColoredText(" | |   | |  | | |      | |_) | |__) |__) | |__) || |  ", leagueGold);
+            AppendColoredText(" | |   | |  | | |      |  _ <|  _  /|__ <|  ___/ | |  ", leagueGold);
+            AppendColoredText(" | |___| |__| | |____  | |_) | | \\ \\___) | |    _| |_ ", leagueGold);
+            AppendColoredText(" |______\\____/|______| |____/|_|  \\_\\____/|_|   |_____|", leagueGold);
+            AppendColoredText("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+            AppendColoredText("\nWelcome Summoner! Choose an option to proceed.", Color.White);
+            AppendColoredText("This tool will help you resolve connectivity issues by resetting game services.", Color.LightGray);
+            AppendColoredText("\nRESET LEAGUE - Restarts League of Legends processes", leagueBlue);
+            AppendColoredText("RESET VANGUARD - Restarts Riot Vanguard service", leagueBlue);
+            AppendColoredText("RESET BOTH - Restarts both League and Vanguard", leagueBlue);
+            AppendColoredText("\nStatus: Ready", Color.Green);
+        }
+
+        // Load custom fonts from resources
+        private void LoadCustomFonts()
+        {
+            try
+            {
+                // Create fallback fonts in case the embedded ones fail
+                titleFont = new Font("Arial", 16f, FontStyle.Bold);
+                buttonFont = new Font("Arial", 11f, FontStyle.Bold);
+                
+                // NOTE: In a real implementation, you would include the font files as embedded resources
+                // and load them using the code below. For this example, we'll just use the fallback fonts.
+                
+                /*
+                // Load BeaufortforLOL-Bold from embedded resources
+                byte[] fontData = Properties.Resources.BeaufortforLOL_Bold;
+                IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
+                Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
+                uint dummy = 0;
+                fonts.AddMemoryFont(fontPtr, fontData.Length);
+                AddFontMemResourceEx(fontPtr, (uint)fontData.Length, IntPtr.Zero, ref dummy);
+                Marshal.FreeCoTaskMem(fontPtr);
+                
+                // Create fonts
+                titleFont = new Font(fonts.Families[0], 16f, FontStyle.Bold);
+                buttonFont = new Font(fonts.Families[0], 11f, FontStyle.Bold);
+                */
+            }
+            catch (Exception ex)
+            {
+                // Fallback to system fonts if custom fonts fail to load
+                titleFont = new Font("Arial", 16f, FontStyle.Bold);
+                buttonFont = new Font("Arial", 11f, FontStyle.Bold);
+            }
+        }
+
+        // Fade-in animation
+        private void FadeIn(object sender, EventArgs e)
+        {
+            opacity += 0.1f;
+            if (opacity >= 1.0f)
+            {
+                opacity = 1.0f;
+                fadeTimer.Stop();
+            }
+            this.Opacity = opacity;
+        }
+
+        // Make form draggable
+        private Point lastPoint = new Point(0, 0);
+        private void MainForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            lastPoint = new Point(e.X, e.Y);
+        }
+
+        private void MainForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                this.Left += e.X - lastPoint.X;
+                this.Top += e.Y - lastPoint.Y;
+            }
         }
 
         private enum ScriptType
@@ -96,13 +325,32 @@ namespace LolReset
         {
             if (isRunning)
             {
-                MessageBox.Show("A script is already running. Please wait for it to complete.", "Script Running", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("A script is already running. Please wait for it to complete.", "Process Running", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             isRunning = true;
             SetButtonsEnabled(false);
             outputBox.Clear();
+
+            string scriptName = "";
+            switch (scriptType)
+            {
+                case ScriptType.LeagueOnly:
+                    scriptName = "LEAGUE OF LEGENDS";
+                    break;
+                case ScriptType.VanguardOnly:
+                    scriptName = "VANGUARD";
+                    break;
+                case ScriptType.Both:
+                    scriptName = "LEAGUE AND VANGUARD";
+                    break;
+            }
+
+            AppendColoredText($"▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+            AppendColoredText($"INITIATING {scriptName} RESET", leagueGold);
+            AppendColoredText($"▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+            AppendColoredText($"", Color.White);
 
             try
             {
@@ -122,7 +370,7 @@ namespace LolReset
 
                 if (!File.Exists(scriptPath))
                 {
-                    AppendColoredText("Script file not found: " + scriptPath, Color.Red);
+                    AppendColoredText("⚠ Script file not found: " + scriptPath, Color.Red);
                     return;
                 }
 
@@ -145,13 +393,13 @@ namespace LolReset
                             powershell.Streams.Error.DataAdded += (sender, e) =>
                             {
                                 var error = powershell.Streams.Error[e.Index];
-                                AppendColoredText(error.ToString(), Color.Red);
+                                AppendColoredText("⚠ " + error.ToString(), Color.Red);
                             };
 
                             powershell.Streams.Warning.DataAdded += (sender, e) =>
                             {
                                 var warning = powershell.Streams.Warning[e.Index];
-                                AppendColoredText(warning.ToString(), Color.Yellow);
+                                AppendColoredText("⚠ " + warning.ToString(), Color.Yellow);
                             };
 
                             powershell.Streams.Information.DataAdded += (sender, e) =>
@@ -173,17 +421,17 @@ namespace LolReset
                                     if (text.Contains("[31m"))
                                     {
                                         // Red text
-                                        AppendColoredText(text.Replace("[31m", "").Replace("[0m", ""), Color.Red);
+                                        AppendColoredText(text.Replace("[31m", "").Replace("[0m", ""), Color.FromArgb(255, 80, 80));
                                     }
                                     else if (text.Contains("[32m"))
                                     {
                                         // Green text
-                                        AppendColoredText(text.Replace("[32m", "").Replace("[0m", ""), Color.Green);
+                                        AppendColoredText(text.Replace("[32m", "").Replace("[0m", ""), Color.FromArgb(80, 255, 80));
                                     }
                                     else if (text.Contains("[33m"))
                                     {
                                         // Yellow text
-                                        AppendColoredText(text.Replace("[33m", "").Replace("[0m", ""), Color.Yellow);
+                                        AppendColoredText(text.Replace("[33m", "").Replace("[0m", ""), Color.FromArgb(255, 255, 80));
                                     }
                                     else
                                     {
@@ -199,11 +447,13 @@ namespace LolReset
                     }
                 });
 
-                AppendColoredText("\r\nScript execution completed.", Color.Lime);
+                AppendColoredText("\r\n▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+                AppendColoredText("RESET COMPLETE", Color.FromArgb(80, 255, 80));
+                AppendColoredText("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
             }
             catch (Exception ex)
             {
-                AppendColoredText($"Error executing script: {ex.Message}", Color.Red);
+                AppendColoredText($"⚠ Error executing script: {ex.Message}", Color.Red);
             }
             finally
             {
@@ -239,6 +489,19 @@ namespace LolReset
             btnResetLeague.Enabled = enabled;
             btnResetVanguard.Enabled = enabled;
             btnResetBoth.Enabled = enabled;
+            
+            if (enabled)
+            {
+                btnResetLeague.BackColor = leagueAccentBlue;
+                btnResetVanguard.BackColor = leagueAccentBlue;
+                btnResetBoth.BackColor = leagueAccentBlue;
+            }
+            else
+            {
+                btnResetLeague.BackColor = Color.FromArgb(30, 40, 50);
+                btnResetVanguard.BackColor = Color.FromArgb(30, 40, 50);
+                btnResetBoth.BackColor = Color.FromArgb(30, 40, 50);
+            }
         }
 
         private void CreateScripts()
@@ -426,6 +689,74 @@ foreach ($startTask in $startTasks.Keys) {
 }
 
 Write-Host ""$Green=>$Reset Script ended""");
+        }
+    }
+
+    // Custom Button class with League of Legends style
+    public class LeagueButton : Button
+    {
+        private Color hoverColor = Color.FromArgb(10, 60, 100);
+        private Color pressColor = Color.FromArgb(15, 80, 120);
+        private Color borderColor = Color.FromArgb(200, 170, 60);
+        private bool isHovered = false;
+        private bool isPressed = false;
+
+        public LeagueButton()
+        {
+            this.FlatStyle = FlatStyle.Flat;
+            this.FlatAppearance.BorderColor = borderColor;
+            this.FlatAppearance.BorderSize = 1;
+            this.FlatAppearance.MouseOverBackColor = hoverColor;
+            this.FlatAppearance.MouseDownBackColor = pressColor;
+            this.BackColor = Color.FromArgb(7, 48, 73);
+            this.ForeColor = Color.FromArgb(200, 170, 60);
+            this.Font = new Font("Arial", 10f, FontStyle.Bold);
+            this.TextAlign = ContentAlignment.MiddleCenter;
+            
+            this.MouseEnter += (s, e) => { isHovered = true; this.Invalidate(); };
+            this.MouseLeave += (s, e) => { isHovered = false; isPressed = false; this.Invalidate(); };
+            this.MouseDown += (s, e) => { isPressed = true; this.Invalidate(); };
+            this.MouseUp += (s, e) => { isPressed = false; this.Invalidate(); };
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            
+            Graphics g = e.Graphics;
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            
+            // Draw custom glowing border effect
+            if (isHovered)
+            {
+                using (Pen pen = new Pen(Color.FromArgb(200, borderColor), 2))
+                {
+                    g.DrawRectangle(pen, 1, 1, this.Width - 3, this.Height - 3);
+                }
+                
+                // Add a subtle glow
+                using (Pen pen = new Pen(Color.FromArgb(80, borderColor), 1))
+                {
+                    g.DrawRectangle(pen, 0, 0, this.Width - 1, this.Height - 1);
+                    g.DrawRectangle(pen, 2, 2, this.Width - 5, this.Height - 5);
+                }
+            }
+            
+            // Add diagonal line accents in corners (League style)
+            using (Pen accentPen = new Pen(Color.FromArgb(200, borderColor), 1))
+            {
+                // Top left corner
+                g.DrawLine(accentPen, 0, 10, 10, 0);
+                
+                // Top right corner
+                g.DrawLine(accentPen, this.Width - 11, 0, this.Width - 1, 10);
+                
+                // Bottom left corner
+                g.DrawLine(accentPen, 0, this.Height - 11, 10, this.Height - 1);
+                
+                // Bottom right corner
+                g.DrawLine(accentPen, this.Width - 11, this.Height - 1, this.Width - 1, this.Height - 11);
+            }
         }
     }
 }
