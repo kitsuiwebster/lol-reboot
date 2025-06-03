@@ -1,6 +1,6 @@
 # LOL-RESET
 
-Your League client, Valorant game, or Vanguard anti-cheat always crashing or bugging out, and it's a pain to reset them cleanly? These scripts are here to save you the hassle. 💥
+Your League client, or Vanguard anti-cheat always crashing or bugging out, and it's a pain to reset them cleanly? These scripts are here to save you the hassle. 💥
 
 PowerShell scripts to manage Riot-related processes for League of Legends and Vanguard (VGC).
 
