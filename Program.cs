@@ -179,8 +179,11 @@ namespace LolReset
                 BorderStyle = BorderStyle.None,
                 Multiline = true,
                 ScrollBars = RichTextBoxScrollBars.Vertical,
-                Margin = new Padding(0, 10, 0, 0)
+                Margin = new Padding(0, 10, 0, 0),
+                HideSelection = true
             };
+
+            outputBox.GotFocus += (s, e) => { this.Focus(); };
 
             // Create panel for output box with border effect
             Panel outputPanel = new Panel
@@ -210,7 +213,7 @@ namespace LolReset
                 TextAlign = ContentAlignment.MiddleCenter,
                 Dock = DockStyle.Bottom,
                 Height = 20,
-                Padding = new Padding(5)
+                Padding = new Padding(5, 3, 3, 5)
             };
 
             // Gérer le clic sur le lien
