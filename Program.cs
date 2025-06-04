@@ -32,6 +32,7 @@ namespace LolReset
         private RichTextBox outputBox;
         private Panel contentPanel;
         private Panel buttonPanel;
+        private LinkLabel footerLink;
         
         // Constantes pour le positionnement des boutons
         private const int BUTTON_WIDTH = 230;
@@ -67,7 +68,7 @@ namespace LolReset
         {
             // Load custom fonts
             LoadCustomFonts();
-            
+
             // Setup form with standard Windows style
             this.Text = "League of Legends Reboot Tool";
             this.Size = new Size(800, 600);
@@ -79,13 +80,13 @@ namespace LolReset
             this.BackColor = SystemColors.Control; // Standard Windows background
             this.Opacity = 0;
             this.ShowInTaskbar = true;
-            
+
             // Fix for app.ico loading - Use assembly path to ensure correct loading
             try
             {
                 // First try to use the icon from the application's executable
                 this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
-                
+
                 // If that fails, look for app.ico in the directory
                 if (this.Icon == null)
                 {
@@ -101,7 +102,7 @@ namespace LolReset
                 // Fallback to system icon if we can't load the icon
                 this.Icon = SystemIcons.Application;
             }
-            
+
             // Create content panel
             contentPanel = new Panel
             {
@@ -109,7 +110,7 @@ namespace LolReset
                 BackColor = leagueDarkBlue,
                 Padding = new Padding(20)
             };
-            
+
             // Create button panel with fixed height
             buttonPanel = new Panel
             {
@@ -118,7 +119,7 @@ namespace LolReset
                 BackColor = leagueMediumBlue,
                 Padding = new Padding(15)
             };
-            
+
             // Create buttons avec une taille fixe
             btnResetLeague = new LeagueButton
             {
@@ -133,7 +134,7 @@ namespace LolReset
                 Cursor = Cursors.Hand
             };
             btnResetLeague.Click += async (sender, e) => await RunScript(ScriptType.LeagueOnly);
-            
+
             btnResetVanguard = new LeagueButton
             {
                 Text = "REBOOT VANGUARD",
@@ -147,7 +148,7 @@ namespace LolReset
                 Cursor = Cursors.Hand
             };
             btnResetVanguard.Click += async (sender, e) => await RunScript(ScriptType.VanguardOnly);
-            
+
             btnResetBoth = new LeagueButton
             {
                 Text = "REBOOT BOTH",
@@ -161,12 +162,12 @@ namespace LolReset
                 Cursor = Cursors.Hand
             };
             btnResetBoth.Click += async (sender, e) => await RunScript(ScriptType.Both);
-            
+
             // Add buttons directly to button panel
             buttonPanel.Controls.Add(btnResetLeague);
             buttonPanel.Controls.Add(btnResetVanguard);
             buttonPanel.Controls.Add(btnResetBoth);
-            
+
             // Create output box (terminal style)
             outputBox = new RichTextBox
             {
@@ -180,7 +181,7 @@ namespace LolReset
                 ScrollBars = RichTextBoxScrollBars.Vertical,
                 Margin = new Padding(0, 10, 0, 0)
             };
-            
+
             // Create panel for output box with border effect
             Panel outputPanel = new Panel
             {
@@ -190,23 +191,56 @@ namespace LolReset
                 Margin = new Padding(0, 10, 0, 0)
             };
             outputPanel.Controls.Add(outputBox);
-            
+
             // Add controls to content panel
             contentPanel.Controls.Add(outputPanel);
             contentPanel.Controls.Add(buttonPanel);
-            
+
             // Add content panel to form
             this.Controls.Add(contentPanel);
-            
+
+            footerLink = new LinkLabel
+            {
+                Text = "By @kitsuiwebster | Source: https://github.com/kitsuiwebster/lol-reboot.git",
+                LinkColor = Color.FromArgb(120, 120, 180),
+                ActiveLinkColor = leagueGold,
+                LinkBehavior = LinkBehavior.HoverUnderline,
+                BackColor = leagueDarkBlue,
+                Font = new Font("Consolas", 8F),
+                TextAlign = ContentAlignment.MiddleCenter,
+                Dock = DockStyle.Bottom,
+                Height = 20,
+                Padding = new Padding(5)
+            };
+
+            // Gérer le clic sur le lien
+            footerLink.LinkClicked += (s, e) => 
+            {
+                try 
+                {
+                    Process.Start("https://github.com/kitsuiwebster/lol-reboot.git");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Could not open link: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
+            // Ajouter le footer au formulaire
+            this.Controls.Add(footerLink);
+
+            // S'assurer que le footer est au-dessus des autres contrôles
+            footerLink.BringToFront();
+
             // Create scripts folder and save scripts
             CreateScripts();
-            
+
             // Setup fade-in animation
             fadeTimer = new Timer();
             fadeTimer.Interval = 20;
             fadeTimer.Tick += FadeIn;
             fadeTimer.Start();
-            
+
             // Display welcome message
             AppendColoredText(" ___      _______  ___        ______    _______  _______  _______  _______  _______ ", leagueGold);
             AppendColoredText("|   |    |       ||   |      |    _ |  |       ||  _    ||       ||       ||       |", leagueGold);
@@ -222,7 +256,7 @@ namespace LolReset
             AppendColoredText("REBOOT VANGUARD - Restarts Riot Vanguard service", leagueBlue);
             AppendColoredText("REBOOT BOTH - Restarts both League and Vanguard", leagueBlue);
             AppendColoredText("\nStatus: Ready", Color.Green);
-            
+
             // Positionner les boutons après la création de tous les contrôles
             this.Load += (sender, e) => RepositionButtons();
         }
