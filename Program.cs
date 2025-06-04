@@ -69,7 +69,7 @@ namespace LolReset
             LoadCustomFonts();
             
             // Setup form with standard Windows style
-            this.Text = "League of Legends Reset Tool";
+            this.Text = "League of Legends Reboot Tool";
             this.Size = new Size(800, 600);
             this.MinimumSize = new Size(750, 500); // Définir une taille minimale pour éviter la troncature
             this.FormBorderStyle = FormBorderStyle.Sizable; // Standard Windows border
@@ -122,7 +122,7 @@ namespace LolReset
             // Create buttons avec une taille fixe
             btnResetLeague = new LeagueButton
             {
-                Text = "RESET LEAGUE",
+                Text = "REBOOT LEAGUE",
                 Size = new Size(BUTTON_WIDTH, BUTTON_HEIGHT),
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
@@ -136,7 +136,7 @@ namespace LolReset
             
             btnResetVanguard = new LeagueButton
             {
-                Text = "RESET VANGUARD",
+                Text = "REBOOT VANGUARD",
                 Size = new Size(BUTTON_WIDTH, BUTTON_HEIGHT),
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
@@ -150,7 +150,7 @@ namespace LolReset
             
             btnResetBoth = new LeagueButton
             {
-                Text = "RESET BOTH",
+                Text = "REBOOT BOTH",
                 Size = new Size(BUTTON_WIDTH, BUTTON_HEIGHT),
                 Font = buttonFont,
                 BackColor = leagueAccentBlue,
@@ -208,19 +208,19 @@ namespace LolReset
             fadeTimer.Start();
             
             // Display welcome message
-            AppendColoredText("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
-            AppendColoredText("  _      ____  _        ____  _____ ____  _____ _____", leagueGold);
-            AppendColoredText(" | |    / __ \\| |      |  _ \\|  __ \\___ \\|  __ \\_   _|", leagueGold);
-            AppendColoredText(" | |   | |  | | |      | |_) | |__) |__) | |__) || |  ", leagueGold);
-            AppendColoredText(" | |   | |  | | |      |  _ <|  _  /|__ <|  ___/ | |  ", leagueGold);
-            AppendColoredText(" | |___| |__| | |____  | |_) | | \\ \\___) | |    _| |_ ", leagueGold);
-            AppendColoredText(" |______\\____/|______| |____/|_|  \\_\\____/|_|   |_____|", leagueGold);
-            AppendColoredText("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+            AppendColoredText(" ___      _______  ___        ______    _______  _______  _______  _______  _______ ", leagueGold);
+            AppendColoredText("|   |    |       ||   |      |    _ |  |       ||  _    ||       ||       ||       |", leagueGold);
+            AppendColoredText("|   |    |   _   ||   |      |   | ||  |    ___|| |_|   ||   _   ||   _   ||_     _|", leagueGold);
+            AppendColoredText("|   |    |  | |  ||   |      |   |_||_ |   |___ |       ||  | |  ||  | |  |  |   |  ", leagueGold);
+            AppendColoredText("|   |___ |  |_|  ||   |___   |    __  ||    ___||  _   | |  |_|  ||  |_|  |  |   |  ", leagueGold);
+            AppendColoredText("|       ||       ||       |  |   |  | ||   |___ | |_|   ||       ||       |  |   |  ", leagueGold);
+            AppendColoredText("|_______||_______||_______|  |___|  |_||_______||_______||_______||_______|  |___|  ", leagueGold);
+            AppendColoredText("By @kitsuiwebster", leagueGold);
             AppendColoredText("\nWelcome Summoner! Choose an option to proceed.", Color.White);
             AppendColoredText("This tool will help you resolve connectivity issues by resetting game services.", Color.LightGray);
-            AppendColoredText("\nRESET LEAGUE - Restarts League of Legends processes", leagueBlue);
-            AppendColoredText("RESET VANGUARD - Restarts Riot Vanguard service", leagueBlue);
-            AppendColoredText("RESET BOTH - Restarts both League and Vanguard", leagueBlue);
+            AppendColoredText("\nREBOOT LEAGUE - Restarts League of Legends processes", leagueBlue);
+            AppendColoredText("REBOOT VANGUARD - Restarts Riot Vanguard service", leagueBlue);
+            AppendColoredText("REBOOT BOTH - Restarts both League and Vanguard", leagueBlue);
             AppendColoredText("\nStatus: Ready", Color.Green);
             
             // Positionner les boutons après la création de tous les contrôles
@@ -358,9 +358,7 @@ namespace LolReset
                     break;
             }
 
-            AppendColoredText($"▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
-            AppendColoredText($"INITIATING {scriptName} RESET", leagueGold);
-            AppendColoredText($"▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+            AppendColoredText($"\nINITIATING {scriptName} REBOOT", leagueGold);
             AppendColoredText($"", Color.White);
 
             try
@@ -422,35 +420,43 @@ namespace LolReset
                             // Execute the script and capture output
                             var results = powershell.Invoke();
 
-                            // Display results
+                            // Display results avec coloration intelligente basée sur le contenu
                             foreach (var result in results)
                             {
                                 string text = result.ToString();
+                                
+                                // Si le texte contient "=>" (notre marqueur standard)
                                 if (text.Contains("=>"))
                                 {
-                                    // Parse colored text
-                                    if (text.Contains("[31m"))
+                                    string lowercaseText = text.ToLower();
+                                    
+                                    // Appliquer des couleurs selon le contenu du message
+                                    if (lowercaseText.Contains("error") || 
+                                        lowercaseText.Contains("failed") || 
+                                        lowercaseText.Contains("no running instances") ||
+                                        lowercaseText.Contains("did not close gracefully") ||
+                                        lowercaseText.Contains("forcing termination"))
                                     {
-                                        // Red text
-                                        AppendColoredText(text.Replace("[31m", "").Replace("[0m", ""), Color.FromArgb(255, 80, 80));
+                                        // Messages d'erreur en rouge
+                                        AppendColoredText(text, Color.FromArgb(255, 80, 80));
                                     }
-                                    else if (text.Contains("[32m"))
+                                    else if (lowercaseText.Contains("started") || 
+                                            lowercaseText.Contains("complete") || 
+                                            lowercaseText.Contains("successfully") ||
+                                            lowercaseText.Contains("closed gracefully"))
                                     {
-                                        // Green text
-                                        AppendColoredText(text.Replace("[32m", "").Replace("[0m", ""), Color.FromArgb(80, 255, 80));
-                                    }
-                                    else if (text.Contains("[33m"))
-                                    {
-                                        // Yellow text
-                                        AppendColoredText(text.Replace("[33m", "").Replace("[0m", ""), Color.FromArgb(255, 255, 80));
+                                        // Messages de succès en vert
+                                        AppendColoredText(text, Color.FromArgb(80, 255, 80));
                                     }
                                     else
                                     {
-                                        AppendColoredText(text, Color.White);
+                                        // Messages informatifs en jaune
+                                        AppendColoredText(text, Color.FromArgb(255, 255, 80));
                                     }
                                 }
                                 else
                                 {
+                                    // Texte standard en blanc
                                     AppendColoredText(text, Color.White);
                                 }
                             }
@@ -458,9 +464,7 @@ namespace LolReset
                     }
                 });
 
-                AppendColoredText("\r\n▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
-                AppendColoredText("RESET COMPLETE", Color.FromArgb(80, 255, 80));
-                AppendColoredText("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓", leagueGold);
+                AppendColoredText("\nREBOOT COMPLETE\n", Color.FromArgb(80, 255, 80));
             }
             catch (Exception ex)
             {
@@ -526,53 +530,49 @@ namespace LolReset
 
             // League of Legends Reset Script
             string leagueScriptPath = Path.Combine(scriptDirectory, "ResetLeague.ps1");
-            File.WriteAllText(leagueScriptPath, @"$Reset = [char]27 + ""[0m""
-$Red = [char]27 + ""[31m""
-$Green = [char]27 + ""[32m""
-$Yellow = [char]27 + ""[33m""
-
+            File.WriteAllText(leagueScriptPath, @"
 Add-Type -AssemblyName System.Windows.Forms
 
-Write-Host ""$Green=>$Reset League reset script has started.""
+Write-Host ""=> League reset script has started.""
 $stopTasks = ""LeagueClientUx"", ""RiotClientServices"", ""LeagueClient""
 
 foreach ($stopTask in $stopTasks) {
     Try {
-        Write-Host ""$Yellow=>$Reset Attempting to stop $stopTask gracefully...""
+        Write-Host ""=> Attempting to stop $stopTask gracefully...""
         $processes = Get-Process -Name $stopTask -ErrorAction SilentlyContinue
         if ($null -ne $processes) {
             foreach ($process in $processes) {
-                Write-Host ""$Yellow=>$Reset Found running instance of $stopTask with PID $($process.Id)""
+                Write-Host ""=> Found running instance of $stopTask with PID $($process.Id)""
                 $process.CloseMainWindow() | Out-Null
-                Write-Host ""$Yellow=>$Reset Sent close request to $stopTask with PID $($process.Id)""
-                Write-Host ""$Yellow=>$Reset .""
+                Write-Host ""=> Sent close request to $stopTask with PID $($process.Id)""
+                Write-Host ""=> .""
                 Start-Sleep -Seconds 1
-                Write-Host ""$Yellow=>$Reset ..""
+                Write-Host ""=> ..""
                 Start-Sleep -Seconds 1
-                Write-Host ""$Yellow=>$Reset ...""
+                Write-Host ""=> ...""
                 Start-Sleep -Seconds 1
-                Write-Host ""$Yellow=>$Reset ....""
+                Write-Host ""=> ....""
                 Start-Sleep -Seconds 1
-                Write-Host ""$Yellow=>$Reset .....""
+                Write-Host ""=> .....""
                 Start-Sleep -Seconds 1
                 if (!$process.HasExited) {
-                    Write-Host ""$Red=>$Reset Process $stopTask with PID $($process.Id) did not close gracefully, forcing termination...""
+                    Write-Host ""=> Process $stopTask with PID $($process.Id) did not close gracefully, forcing termination...""
                     $process | Stop-Process -Force
                 } else {
-                    Write-Host ""$Green=>$Reset Process $stopTask with PID $($process.Id) closed gracefully.""
+                    Write-Host ""=> Process $stopTask with PID $($process.Id) closed gracefully.""
                 }
             }
         } else {
-            Write-Host ""$Red=>$Reset No running instances of $stopTask found.""
+            Write-Host ""=> No running instances of $stopTask found.""
         }
-        Write-Host ""$Yellow=>$Reset Stopped $stopTask""
+        Write-Host ""=> Stopped $stopTask""
     }
     Catch {
-        Write-Host ""$Red=>$Reset Failed to stop $stopTask. Error: $_""
+        Write-Host ""=> Failed to stop $stopTask. Error: $_""
     }
 }
 
-Write-Host ""$Yellow=>$Reset Be patient... restarting League of legends (don't forget to report your jungler)""
+Write-Host ""=> Be patient... restarting League of legends (don't forget to report your jungler)""
 Start-Sleep -Seconds 15
 
 $startTasks = @{
@@ -582,72 +582,64 @@ $startTasks = @{
 
 foreach ($startTask in $startTasks.Keys) {
     Try {
-        Write-Host ""$Yellow=>$Reset Attempting to start $startTask...""
+        Write-Host ""=> Attempting to start $startTask...""
         Start-Process $startTasks[$startTask]
-        Write-Host ""$Yellow=>$Reset Started $startTask""
+        Write-Host ""=> Started $startTask""
     }
     Catch {
-        Write-Host ""$Red=>$Reset Failed to start $startTask. Error: $_""
+        Write-Host ""=> Failed to start $startTask. Error: $_""
     }
 }
 
-Write-Host ""$Green=>$Reset League reset script ended""");
+Write-Host ""=> League reset script ended""");
 
             // Vanguard Reset Script
             string vanguardScriptPath = Path.Combine(scriptDirectory, "ResetVanguard.ps1");
-            File.WriteAllText(vanguardScriptPath, @"$Reset = [char]27 + ""[0m""
-$Red = [char]27 + ""[31m""
-$Green = [char]27 + ""[32m""
-$Yellow = [char]27 + ""[33m""
-
+            File.WriteAllText(vanguardScriptPath, @"
 Add-Type -AssemblyName System.Windows.Forms
 
-Write-Host ""$Green=>$Reset Vanguard reset script has started.""
+Write-Host ""=> Vanguard reset script has started.""
 
 Try {
-    Write-Host ""$Yellow=>$Reset Attempting to stop Vanguard service (vgc)...""
+    Write-Host ""=> Attempting to stop Vanguard service (vgc)...""
     Stop-Service -Name ""vgc"" -Force -ErrorAction Stop
-    Write-Host ""$Green=>$Reset Vanguard service stopped successfully.""
+    Write-Host ""=> Vanguard service stopped successfully.""
 
-    Write-Host ""$Yellow=>$Reset Waiting 5 seconds before restarting vgc...""
+    Write-Host ""=> Waiting 5 seconds before restarting vgc...""
     Start-Sleep -Seconds 5
 
-    Write-Host ""$Yellow=>$Reset Attempting to start Vanguard service (vgc)...""
+    Write-Host ""=> Attempting to start Vanguard service (vgc)...""
     Start-Service -Name ""vgc"" -ErrorAction Stop
-    Write-Host ""$Green=>$Reset Vanguard service started successfully.""
+    Write-Host ""=> Vanguard service started successfully.""
 }
 Catch {
-    Write-Host ""$Red=>$Reset Failed to reset Vanguard (vgc). Error: $_""
+    Write-Host ""=> Failed to reset Vanguard (vgc). Error: $_""
 }
 
-Write-Host ""$Green=>$Reset Vanguard reset script ended.""");
+Write-Host ""=> Vanguard reset script ended.""");
 
             // Both Reset Script
             string bothScriptPath = Path.Combine(scriptDirectory, "ResetBoth.ps1");
-            File.WriteAllText(bothScriptPath, @"$Reset = [char]27 + ""[0m""
-$Red = [char]27 + ""[31m""
-$Green = [char]27 + ""[32m""
-$Yellow = [char]27 + ""[33m""
-
+            File.WriteAllText(bothScriptPath, @"
 Add-Type -AssemblyName System.Windows.Forms
 
-Write-Host ""$Green=>$Reset Script has started.""
+Write-Host ""=> Script has started.""
 
 # Reset Vanguard (vgc) Service
 Try {
-    Write-Host ""$Yellow=>$Reset Attempting to stop Vanguard service (vgc)...""
+    Write-Host ""=> Attempting to stop Vanguard service (vgc)...""
     Stop-Service -Name ""vgc"" -Force -ErrorAction Stop
-    Write-Host ""$Green=>$Reset Vanguard service stopped successfully.""
+    Write-Host ""=> Vanguard service stopped successfully.""
 
-    Write-Host ""$Yellow=>$Reset Waiting 5 seconds before restarting vgc...""
+    Write-Host ""=> Waiting 5 seconds before restarting vgc...""
     Start-Sleep -Seconds 5
 
-    Write-Host ""$Yellow=>$Reset Attempting to start Vanguard service (vgc)...""
+    Write-Host ""=> Attempting to start Vanguard service (vgc)...""
     Start-Service -Name ""vgc"" -ErrorAction Stop
-    Write-Host ""$Green=>$Reset Vanguard service started successfully.""
+    Write-Host ""=> Vanguard service started successfully.""
 }
 Catch {
-    Write-Host ""$Red=>$Reset Failed to reset Vanguard (vgc). Error: $_""
+    Write-Host ""=> Failed to reset Vanguard (vgc). Error: $_""
 }
 
 # Stop League-related processes
@@ -655,32 +647,32 @@ $stopTasks = ""LeagueClientUx"", ""RiotClientServices"", ""LeagueClient""
 
 foreach ($stopTask in $stopTasks) {
     Try {
-        Write-Host ""$Yellow=>$Reset Attempting to stop $stopTask gracefully...""
+        Write-Host ""=> Attempting to stop $stopTask gracefully...""
         $processes = Get-Process -Name $stopTask -ErrorAction SilentlyContinue
         if ($null -ne $processes) {
             foreach ($process in $processes) {
-                Write-Host ""$Yellow=>$Reset Found running instance of $stopTask with PID $($process.Id)""
+                Write-Host ""=> Found running instance of $stopTask with PID $($process.Id)""
                 $process.CloseMainWindow() | Out-Null
-                Write-Host ""$Yellow=>$Reset Sent close request to $stopTask with PID $($process.Id)""
+                Write-Host ""=> Sent close request to $stopTask with PID $($process.Id)""
                 Start-Sleep -Seconds 5
                 if (!$process.HasExited) {
-                    Write-Host ""$Red=>$Reset Process $stopTask with PID $($process.Id) did not close gracefully, forcing termination...""
+                    Write-Host ""=> Process $stopTask with PID $($process.Id) did not close gracefully, forcing termination...""
                     $process | Stop-Process -Force
                 } else {
-                    Write-Host ""$Green=>$Reset Process $stopTask with PID $($process.Id) closed gracefully.""
+                    Write-Host ""=> Process $stopTask with PID $($process.Id) closed gracefully.""
                 }
             }
         } else {
-            Write-Host ""$Red=>$Reset No running instances of $stopTask found.""
+            Write-Host ""=> No running instances of $stopTask found.""
         }
-        Write-Host ""$Yellow=>$Reset Stopped $stopTask""
+        Write-Host ""=> Stopped $stopTask""
     }
     Catch {
-        Write-Host ""$Red=>$Reset Failed to stop $stopTask. Error: $_""
+        Write-Host ""=> Failed to stop $stopTask. Error: $_""
     }
 }
 
-Write-Host ""$Yellow=>$Reset Be patient... restarting League of Legends (don't forget to report your jungler)""
+Write-Host ""=> Be patient... restarting League of Legends (don't forget to report your jungler)""
 Start-Sleep -Seconds 15
 
 $startTasks = @{
@@ -690,16 +682,16 @@ $startTasks = @{
 
 foreach ($startTask in $startTasks.Keys) {
     Try {
-        Write-Host ""$Yellow=>$Reset Attempting to start $startTask...""
+        Write-Host ""=> Attempting to start $startTask...""
         Start-Process $startTasks[$startTask]
-        Write-Host ""$Yellow=>$Reset Started $startTask""
+        Write-Host ""=> Started $startTask""
     }
     Catch {
-        Write-Host ""$Red=>$Reset Failed to start $startTask. Error: $_""
+        Write-Host ""=> Failed to start $startTask. Error: $_""
     }
 }
 
-Write-Host ""$Green=>$Reset Script ended""");
+Write-Host ""=> Script ended""");
         }
     }
 
