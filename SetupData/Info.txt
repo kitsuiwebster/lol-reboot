@@ -5,4 +5,4 @@ Thanks for installing !
   - Reset Vanguard - Restarts the Vanguard anti-cheat service
   - Reset Both - Restarts both League and Vanguard at once
 
-I hope you're not going to play Garen. And don't forget to touch some grass (I know taking showers is toomuch).
+I hope you're not going to play Garen. And don't forget to touch some grass (I know taking showers is too much).
