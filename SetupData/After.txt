@@ -1,0 +1,6 @@
+Thanks for installing !
+- Open the installed application from your Start menu or desktop shortcut
+- The program provides three simple buttons:
+  - Reset League - Restarts all League of Legends processes
+  - Reset Vanguard - Restarts the Vanguard anti-cheat service
+  - Reset Both - Restarts both League and Vanguard at once
