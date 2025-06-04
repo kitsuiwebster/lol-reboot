@@ -4,8 +4,8 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net472</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>LolReset</RootNamespace>
-    <AssemblyName>LolReset</AssemblyName>
+    <RootNamespace>LoL Reboot</RootNamespace>
+    <AssemblyName>LoL Reboot</AssemblyName>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
