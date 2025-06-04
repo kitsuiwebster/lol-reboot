@@ -2,6 +2,32 @@
 
 Is your **League of Legends client** or **Vanguard anti-cheat** constantly crashing, freezing, or refusing to start? These PowerShell scripts help you reset them cleanly and quickly — no more hunting down rogue processes or restarting your PC. 💥
 
+## 📥 Application Installation (Recommended)
+
+### Simple GUI Version
+
+For the easiest experience, download the user-friendly application:
+
+1. **Download the installer**:
+   * Go to the [Releases](https://github.com/kitsuiwebster/lol-reboot/releases) page
+   * Download the latest `LoLRebootSetup.exe` file
+
+2. **Install the application**:
+   * Run the downloaded `LoLRebootSetup.exe`
+   * Follow the installation prompts
+   * The application will install to your computer
+
+3. **Launch LOL-REBOOT**:
+   * Open the installed application from your Start menu or desktop shortcut
+   * The program provides three simple buttons:
+     * **Reset League** - Restarts all League of Legends processes
+     * **Reset Vanguard** - Restarts the Vanguard anti-cheat service
+     * **Reset Both** - Restarts both League and Vanguard at once
+
+4. **Just click the appropriate button** whenever you need to reboot either LoL, VGC or both.
+
+> 💡 **Note**: The application automatically runs with admin privileges needed to restart the services.
+
 ## 📁 Standalone Powershell Scripts
 
 ### `ResetLeague.ps1`
