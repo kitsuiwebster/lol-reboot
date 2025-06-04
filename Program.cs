@@ -17,6 +17,7 @@ namespace LolReset
         [STAThread]
         static void Main()
         {
+            // Initialize the Windows Forms application
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
@@ -34,7 +35,7 @@ namespace LolReset
         private Panel buttonPanel;
         private LinkLabel footerLink;
         
-        // Constantes pour le positionnement des boutons
+        // Constants for button positioning
         private const int BUTTON_WIDTH = 230;
         private const int BUTTON_HEIGHT = 50;
         private const int BUTTON_SPACING = 20;
@@ -43,7 +44,7 @@ namespace LolReset
         // Operation state
         private bool isRunning = false;
         
-        // Custom colors
+        // Custom colors used throughout the UI
         private readonly Color leagueGold = Color.FromArgb(200, 170, 60);
         private readonly Color leagueBlue = Color.FromArgb(0, 136, 169);
         private readonly Color leagueDarkBlue = Color.FromArgb(1, 10, 19);
@@ -55,10 +56,11 @@ namespace LolReset
         private Font titleFont;
         private Font buttonFont;
 
-        // Animation state
+        // Animation state for fade-in effect
         private Timer fadeTimer;
         private float opacity = 0.0f;
 
+        // Import Windows GDI+ function to load custom fonts
         [DllImport("gdi32.dll")]
         private static extern IntPtr AddFontMemResourceEx(IntPtr pbFont, uint cbFont, IntPtr pdv, [In] ref uint pcFonts);
 
@@ -72,12 +74,12 @@ namespace LolReset
             // Setup form with standard Windows style
             this.Text = "League of Legends Reboot Tool";
             this.Size = new Size(800, 600);
-            this.MinimumSize = new Size(750, 500); // Définir une taille minimale pour éviter la troncature
-            this.FormBorderStyle = FormBorderStyle.Sizable; // Standard Windows border
+            this.MinimumSize = new Size(750, 500); 
+            this.FormBorderStyle = FormBorderStyle.Sizable;
             this.MinimizeBox = true;
-            this.MaximizeBox = false; // Disable maximize button
+            this.MaximizeBox = false;
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = SystemColors.Control; // Standard Windows background
+            this.BackColor = SystemColors.Control;
             this.Opacity = 0;
             this.ShowInTaskbar = true;
 
@@ -120,7 +122,7 @@ namespace LolReset
                 Padding = new Padding(15)
             };
 
-            // Create buttons avec une taille fixe
+            // Create buttons with fixed size
             btnResetLeague = new LeagueButton
             {
                 Text = "REBOOT LEAGUE",
@@ -183,6 +185,7 @@ namespace LolReset
                 HideSelection = true
             };
 
+            // Prevent focus on outputBox
             outputBox.GotFocus += (s, e) => { this.Focus(); };
 
             // Create panel for output box with border effect
@@ -202,6 +205,7 @@ namespace LolReset
             // Add content panel to form
             this.Controls.Add(contentPanel);
 
+            // Create and configure the footer link
             footerLink = new LinkLabel
             {
                 Text = "By @kitsuiwebster | Source: https://github.com/kitsuiwebster/lol-reboot.git",
@@ -216,7 +220,7 @@ namespace LolReset
                 Padding = new Padding(5, 3, 3, 5)
             };
 
-            // Gérer le clic sur le lien
+            // Handle click on the link
             footerLink.LinkClicked += (s, e) => 
             {
                 try 
@@ -229,13 +233,13 @@ namespace LolReset
                 }
             };
 
-            // Ajouter le footer au formulaire
+            // Add the footer to the form
             this.Controls.Add(footerLink);
 
-            // S'assurer que le footer est au-dessus des autres contrôles
+            // Ensure the footer is above other controls
             footerLink.BringToFront();
 
-            // Create scripts folder and save scripts
+            // Create scripts folder and save PowerShell scripts
             CreateScripts();
 
             // Setup fade-in animation
@@ -244,7 +248,7 @@ namespace LolReset
             fadeTimer.Tick += FadeIn;
             fadeTimer.Start();
 
-            // Display welcome message
+            // Display welcome message with ASCII art logo
             AppendColoredText(" ___      _______  ___        ______    _______  _______  _______  _______  _______ ", leagueGold);
             AppendColoredText("|   |    |       ||   |      |    _ |  |       ||  _    ||       ||       ||       |", leagueGold);
             AppendColoredText("|   |    |   _   ||   |      |   | ||  |    ___|| |_|   ||   _   ||   _   ||_     _|", leagueGold);
@@ -260,43 +264,43 @@ namespace LolReset
             AppendColoredText("REBOOT BOTH - Restarts both League and Vanguard", leagueBlue);
             AppendColoredText("\nStatus: Ready", Color.Green);
 
-            // Positionner les boutons après la création de tous les contrôles
+            // Position buttons after creating all controls
             this.Load += (sender, e) => RepositionButtons();
         }
 
-        // Méthode centralisée pour calculer et positionner les boutons
+        // Centralized method to calculate and position buttons
         private void RepositionButtons()
         {
             if (btnResetLeague == null || btnResetVanguard == null || btnResetBoth == null || buttonPanel == null)
                 return;
                 
-            // Largeur totale nécessaire pour tous les boutons avec espacement
+            // Total width needed for all buttons with spacing
             int totalButtonWidth = (BUTTON_WIDTH * 3) + (BUTTON_SPACING * 2);
             
-            // Calculer le point de départ pour centrer les boutons dans le panel
+            // Calculate the starting point to center buttons in the panel
             int availableWidth = buttonPanel.ClientSize.Width;
             int startX = (availableWidth - totalButtonWidth) / 2;
             
-            // S'assurer que startX n'est pas négatif
+            // Ensure startX is not negative
             startX = Math.Max(startX, BUTTON_SPACING);
             
-            // Positionner chaque bouton
+            // Position each button
             btnResetLeague.Location = new Point(startX, BUTTON_TOP_MARGIN);
             btnResetVanguard.Location = new Point(startX + BUTTON_WIDTH + BUTTON_SPACING, BUTTON_TOP_MARGIN);
             btnResetBoth.Location = new Point(startX + (BUTTON_WIDTH * 2) + (BUTTON_SPACING * 2), BUTTON_TOP_MARGIN);
             
-            // Vérifier si les boutons sont partiellement hors écran et ajuster si nécessaire
+            // Check if buttons are partially off-screen and adjust if necessary
             if (startX + totalButtonWidth > availableWidth)
             {
-                // Si l'espace est insuffisant, réduire la taille des boutons ou les réorganiser
+                // If space is insufficient, reduce button size or reorganize
                 int adjustedWidth = (availableWidth - (BUTTON_SPACING * 4)) / 3;
-                adjustedWidth = Math.Max(adjustedWidth, 150); // Taille minimale pour les boutons
+                adjustedWidth = Math.Max(adjustedWidth, 150); 
                 
                 btnResetLeague.Size = new Size(adjustedWidth, BUTTON_HEIGHT);
                 btnResetVanguard.Size = new Size(adjustedWidth, BUTTON_HEIGHT);
                 btnResetBoth.Size = new Size(adjustedWidth, BUTTON_HEIGHT);
                 
-                // Recalculer les positions avec la nouvelle taille
+                // Recalculate positions with new size
                 int newTotalWidth = (adjustedWidth * 3) + (BUTTON_SPACING * 2);
                 int newStartX = (availableWidth - newTotalWidth) / 2;
                 newStartX = Math.Max(newStartX, BUTTON_SPACING);
@@ -310,47 +314,23 @@ namespace LolReset
         // Load custom fonts from resources
         private void LoadCustomFonts()
         {
-            try
-            {
-                // Create fallback fonts in case the embedded ones fail
-                titleFont = new Font("Arial", 16f, FontStyle.Bold);
-                buttonFont = new Font("Arial", 11f, FontStyle.Bold);
-                
-                // NOTE: In a real implementation, you would include the font files as embedded resources
-                // and load them using the code below. For this example, we'll just use the fallback fonts.
-                
-                /*
-                // Load BeaufortforLOL-Bold from embedded resources
-                byte[] fontData = Properties.Resources.BeaufortforLOL_Bold;
-                IntPtr fontPtr = Marshal.AllocCoTaskMem(fontData.Length);
-                Marshal.Copy(fontData, 0, fontPtr, fontData.Length);
-                uint dummy = 0;
-                fonts.AddMemoryFont(fontPtr, fontData.Length);
-                AddFontMemResourceEx(fontPtr, (uint)fontData.Length, IntPtr.Zero, ref dummy);
-                Marshal.FreeCoTaskMem(fontPtr);
-                
-                // Create fonts
-                titleFont = new Font(fonts.Families[0], 16f, FontStyle.Bold);
-                buttonFont = new Font(fonts.Families[0], 11f, FontStyle.Bold);
-                */
-            }
-            catch (Exception ex)
-            {
-                // Fallback to system fonts if custom fonts fail to load
-                titleFont = new Font("Arial", 16f, FontStyle.Bold);
-                buttonFont = new Font("Arial", 11f, FontStyle.Bold);
-            }
+
+            // Set default fonts
+            titleFont = new Font("Courrier New", 16f, FontStyle.Bold);
+            buttonFont = new Font("Courrier New", 11f, FontStyle.Bold);
+
         }
 
+        // Handle resizing of the form
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
             
-            // Recalculer le positionnement des boutons à chaque redimensionnement
+            // Recalculate button positioning on each resize event
             RepositionButtons();
         }
 
-        // Fade-in animation
+        // Fade-in animation handler
         private void FadeIn(object sender, EventArgs e)
         {
             opacity += 0.1f;
@@ -362,6 +342,7 @@ namespace LolReset
             this.Opacity = opacity;
         }
 
+        // Enum to specify which script to run
         private enum ScriptType
         {
             LeagueOnly,
@@ -369,6 +350,7 @@ namespace LolReset
             Both
         }
         
+        // Execute the selected PowerShell script asynchronously
         private async Task RunScript(ScriptType scriptType)
         {
             if (isRunning)
@@ -457,24 +439,24 @@ namespace LolReset
                             // Execute the script and capture output
                             var results = powershell.Invoke();
 
-                            // Display results avec coloration intelligente basée sur le contenu
+                            // Display results with intelligent coloring based on content
                             foreach (var result in results)
                             {
                                 string text = result.ToString();
                                 
-                                // Si le texte contient "=>" (notre marqueur standard)
+                                // If the text contains "=>" (our standard marker)
                                 if (text.Contains("=>"))
                                 {
                                     string lowercaseText = text.ToLower();
                                     
-                                    // Appliquer des couleurs selon le contenu du message
+                                    // Apply colors based on message content
                                     if (lowercaseText.Contains("error") || 
                                         lowercaseText.Contains("failed") || 
                                         lowercaseText.Contains("no running instances") ||
                                         lowercaseText.Contains("did not close gracefully") ||
                                         lowercaseText.Contains("forcing termination"))
                                     {
-                                        // Messages d'erreur en rouge
+                                        // Error messages in red
                                         AppendColoredText(text, Color.FromArgb(255, 80, 80));
                                     }
                                     else if (lowercaseText.Contains("started") || 
@@ -482,18 +464,18 @@ namespace LolReset
                                             lowercaseText.Contains("successfully") ||
                                             lowercaseText.Contains("closed gracefully"))
                                     {
-                                        // Messages de succès en vert
+                                        // Success messages in green
                                         AppendColoredText(text, Color.FromArgb(80, 255, 80));
                                     }
                                     else
                                     {
-                                        // Messages informatifs en jaune
+                                        // Informational messages in yellow
                                         AppendColoredText(text, Color.FromArgb(255, 255, 80));
                                     }
                                 }
                                 else
                                 {
-                                    // Texte standard en blanc
+                                    // Standard text in white
                                     AppendColoredText(text, Color.White);
                                 }
                             }
@@ -514,6 +496,7 @@ namespace LolReset
             }
         }
 
+        // Add colored text to the output box
         private void AppendColoredText(string text, Color color)
         {
             if (outputBox.InvokeRequired)
@@ -530,6 +513,7 @@ namespace LolReset
             outputBox.ScrollToCaret();
         }
 
+        // Enable or disable buttons during script execution
         private void SetButtonsEnabled(bool enabled)
         {
             if (this.InvokeRequired)
@@ -556,6 +540,7 @@ namespace LolReset
             }
         }
 
+        // Create PowerShell scripts in the Scripts directory
         private void CreateScripts()
         {
             string scriptDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts");
@@ -735,6 +720,7 @@ Write-Host ""=> Script ended""");
     // Custom Button class with League of Legends style
     public class LeagueButton : Button
     {
+        // Colors for different button states
         private Color hoverColor = Color.FromArgb(10, 60, 100);
         private Color pressColor = Color.FromArgb(15, 80, 120);
         private Color borderColor = Color.FromArgb(200, 170, 60);
@@ -743,6 +729,7 @@ Write-Host ""=> Script ended""");
 
         public LeagueButton()
         {
+            // Initialize button with League of Legends styling
             this.FlatStyle = FlatStyle.Flat;
             this.FlatAppearance.BorderColor = borderColor;
             this.FlatAppearance.BorderSize = 1;
@@ -754,12 +741,14 @@ Write-Host ""=> Script ended""");
             this.TextAlign = ContentAlignment.MiddleCenter;
             this.Cursor = Cursors.Hand;
             
+            // Track mouse events for custom painting
             this.MouseEnter += (s, e) => { isHovered = true; this.Invalidate(); };
             this.MouseLeave += (s, e) => { isHovered = false; isPressed = false; this.Invalidate(); };
             this.MouseDown += (s, e) => { isPressed = true; this.Invalidate(); };
             this.MouseUp += (s, e) => { isPressed = false; this.Invalidate(); };
         }
 
+        // Custom painting for League of Legends button style
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -767,7 +756,7 @@ Write-Host ""=> Script ended""");
             Graphics g = e.Graphics;
             g.SmoothingMode = SmoothingMode.AntiAlias;
             
-            // Draw custom glowing border effect
+            // Draw custom glowing border effect when hovered
             if (isHovered)
             {
                 using (Pen pen = new Pen(Color.FromArgb(200, borderColor), 2))
