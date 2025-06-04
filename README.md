@@ -4,7 +4,7 @@ Is your **League of Legends client** or **Vanguard anti-cheat** constantly crash
 
 ## 📥 Application Installation (Recommended)
 
-[Screenshot](Documentation/Assets/ProgramHub.png)
+![Screenshot](Documentation/Assets/ProgramHub.png)
 
 ### Simple GUI Version
 
