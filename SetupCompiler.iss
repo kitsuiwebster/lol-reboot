@@ -22,8 +22,7 @@ DefaultDirName={autopf}\LoL Reboot Tool
 UninstallDisplayIcon={app}\{#MyAppExeName}
 DisableProgramGroupPage=yes
 LicenseFile=C:\Users\raphm\Desktop\lol-reset\SetupData\LICENSE.txt
-InfoBeforeFile=C:\Users\raphm\Desktop\lol-reset\SetupData\Before.txt
-InfoAfterFile=C:\Users\raphm\Desktop\lol-reset\SetupData\After.txt
+InfoAfterFile=C:\Users\raphm\Desktop\lol-reset\SetupData\Info.txt
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=C:\Users\raphm\Desktop\lol-reset
