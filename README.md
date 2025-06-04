@@ -2,7 +2,7 @@
 
 Is your **League of Legends client** or **Vanguard anti-cheat** constantly crashing, freezing, or refusing to start? These PowerShell scripts help you reset them cleanly and quickly — no more hunting down rogue processes or restarting your PC. 💥
 
-## 📁 Contents
+## 📁 Standalone Powershell Scripts
 
 ### `ResetLeague.ps1`
 
